@@ -2,14 +2,16 @@ This is the new home of research involving reverse-engineering the Google Music 
 
 ##Authentication
 
-  POST https://www.google.com/accounts/ClientLogin HTTP/1.1
-  User-Agent: Music Manager (1, 0, 24, 7712 - Windows)
-  Host: www.google.com
-  Accept: */*
-  Content-Type: application/x-www-form-urlencoded
-  Content-Length: 76
+This is the first thing the client does.
 
-  Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE
+`POST https://www.google.com/accounts/ClientLogin HTTP/1.1
+User-Agent: Music Manager (1, 0, 24, 7712 - Windows)
+Host: www.google.com
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 76
+
+Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE`
 
 
 This responds with the SID=, LSID=, Auth= cookie values.
