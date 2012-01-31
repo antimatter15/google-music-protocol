@@ -15,11 +15,32 @@ Content-Length: 76
 
 It's a POST request done over HTTPS with this content
 
+```
 Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE
+```
 
+The server thinks it's okay and then says.
 
-This responds with the SID=, LSID=, Auth= cookie values.
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Cache-control: no-cache, no-store
+Pragma: no-cache
+Expires: Mon, 01-Jan-1990 00:00:00 GMT
+Date: Tue, 31 Jan 2012 18:55:59 GMT
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Content-Length: 881
+Server: GSE
+```
 
+This responds with the SID=, LSID=, Auth= cookie values delimited by newlines.
+
+```
+SID=DQAAREDACTEDkV3izSm
+LSID=DQAAAMMREDACTEDLLorHpA
+Auth=DQAAREDACTEDep1i-o
+```
 
 ##/upsj/upauth
 
