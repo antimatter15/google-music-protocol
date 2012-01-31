@@ -31,3 +31,25 @@ message MetadataRequest {
 	repeated Track tracks = 1;
 	optional string address = 2; //I don't know what this is
 }
+
+message QueuedUpload {
+	optional string id = 1;
+	optional int32 u0 = 2; //i dont know but this is always 2
+	optional string serverId = 3;  //That's what this number is referred to later as during the uploadsj/rupio
+}
+
+message Status {
+	optional int32 u0 = 1;
+	optional int32 u1 = 2;
+	optional int32 u2 = 3; //like totally always five
+	optional int32 u3 = 4; //this is like totally always 6000
+	optional int32 u4 = 5; 
+	optional int32 u5 = 6; 
+}
+
+message MetadataResponse {
+	optional int32 u0 = 1; //no idea what this is, but the value is 1
+	repeated string ids = 2;
+	repeated QueuedUpload uploads = 3;
+	optional Status state = 6;
+}
