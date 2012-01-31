@@ -1,0 +1,35 @@
+{
+  "songs": [
+    {
+      "genre": "Other",
+      "beatsPerMinute": 0,
+      "albumArtistNorm": "",
+      "album": "",
+      "artistNorm": "colorpulse",
+      "lastPlayed": 1328036402939798,
+      "type": 2,
+      "disc": "",
+      "id": "31c4330d-b519-368d-9fd0-b800d2bde10c",
+      "composer": "",
+      "title": "Carl Sagan - Glorious Dawn (ft Stephen Hawking)",
+      "albumArtist": "",
+      "totalTracks": "",
+      "name": "Carl Sagan - Glorious Dawn (ft Stephen Hawking)",
+      "totalDiscs": "",
+      "year": "",
+      "titleNorm": "carl sagan - glorious dawn (ft stephen hawking)",
+      "artist": "Colorpulse",
+      "albumNorm": "",
+      "paused": true,
+      "track": "",
+      "durationMillis": 213000,
+      "deleted": false,
+      "url": "",
+      "creationDate": 1328032831429284,
+      "playCount": 0,
+      "rating": 0,
+      "comment": ""
+    }
+  ],
+  "success": true
+}
