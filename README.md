@@ -72,22 +72,14 @@ The server responds with that same series of cryptic numbers denoting state as w
 
 ##/upsj/metadata?version=1
 
-This is where the actual /ation/ begins.
+This is where the actual action begins.
 
-cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt
+`cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt`
 
 
+This is a piece of nice, human-readable JSON taken from the web interface API.
 
-antimatter15@antimatter15-desktop:~/google-music-protocol$ id3v2 -R glorious.mp3 
-
-Filename: glorious.mp3
-TCON: Other (12)
-TIT2: Carl Sagan - Glorious Dawn (ft Stephen Hawking)
-PRIV:  (unimplemented)
-PRIV:  (unimplemented)
-TPE1: Colorpulse
-glorious.mp3: No ID3v1 tag
-
+```
 {
   "songs": [
     {
@@ -123,10 +115,11 @@ glorious.mp3: No ID3v1 tag
   ],
   "success": true
 }
+```
 
-POST https://android.clients.google.com/upsj/metadata?version=1 HTTP/1.1
+`POST https://android.clients.google.com/upsj/metadata?version=1 HTTP/1.1`
 
-
+```
 1 {
   2: "lJE0p7HzgoeiBToyLpAoIA" #is this a random string?
   3: 1271984386 #04 / 22 / 10 @ 7:59:46pm EST - Probably Creation Date
@@ -263,3 +256,4 @@ POST https://android.clients.google.com/upsj/metadata?version=1 HTTP/1.1
   61: 1
 }
 2: "00:1E:EC:6F:49:3\n"
+```
