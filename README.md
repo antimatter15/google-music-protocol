@@ -19,6 +19,8 @@ It's a POST request done over HTTPS with this content
 Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE
 ```
 
+Also an interesting tidbit, the `service=sj` thing. At first I thought it was stood for steve jobs, but that wouldn't make too much sense. I had it stuck in the back of my mind for a bit and then it struck me while looking at the uploadsj part of the URL. I think it's short for "skyjam", the internal code name for Google Music.
+
 The server thinks it's okay and then says.
 
 ```
@@ -61,15 +63,6 @@ This seems to send that magical address thing, this time with the last character
 The server responds with that same series of cryptic numbers denoting state as well as what I believe to be the number current upload quota state.
 
 ```
-1: 7
-6 {
-  1: 0
-  2: 0
-  3: 5
-  4: 6000
-  5: 0
-  6: 3000
-}
 8 {
   1: 20000 //maximum number of songs that can be held for your current payment plan
   2: 1696 //total number of songs you have uploaded?
@@ -78,6 +71,8 @@ The server responds with that same series of cryptic numbers denoting state as w
 ```
 
 ##/upsj/metadata?version=1
+
+This is where the actual /ation/ begins.
 
 cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt
 
