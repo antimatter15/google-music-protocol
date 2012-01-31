@@ -1,7 +1,25 @@
 This is the new home of research involving reverse-engineering the Google Music protocol, specifically, the uploading mechanism since most other parts are somewhat trivial.
 
-/accounts/ClientLogin
+
+POST https://www.google.com/accounts/ClientLogin HTTP/1.1
+User-Agent: Music Manager (1, 0, 24, 7712 - Windows)
+Host: www.google.com
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 76
+
+Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE
+
+
+This responds with the SID=, LSID=, Auth= cookie values.
+
+
+
+
 android.clients.google.com/upsj/upauth
+
+cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt
+
 
 
 antimatter15@antimatter15-desktop:~/google-music-protocol$ id3v2 -R glorious.mp3 

@@ -1,29 +1,29 @@
 message Track {
 	optional string id = 2; //i dont know what this is
-	optional int32 creation = 3;
-	optional int32 lastPlayed = 4;
-	optional string title = 6;
-	optional string artist = 7;
-	optional string u0 = 8;
-	optional string u1 = 9;
-	optional string u2 = 10;
-	optional int32 u3 = 11;
-	optional string u4 = 12;
-	optional int32 u5 = 13;
-	optional string genre = 14;	
-	optional int32 duration = 15;
-	optional int32 u6 = 16;
-	optional int32 u7 = 20;
-	optional int32 u8 = 26;
-	optional int32 u9 = 27;
-	optional int32 u10 = 28;
-	optional int32 u11 = 31;
-	optional int32 u12 = 32;
-	optional int32 u13 = 37;
-	optional int32 u14 = 38;
-	optional int32 bitrate = 44;
-	optional string u15 = 53;
-	optional int32 u16 = 61;
+	optional int32 creation = 3; //unix timestamp seconds - only a guess
+	optional int32 lastPlayed = 4; //unix timestamp seconds - only a guess
+	optional string title = 6; //fairly certain
+	optional string artist = 7; //fairly certain
+	optional string u0 = 8; //seems to be exclusively ""
+	optional string u1 = 9; //seems to be exclusively ""
+	optional string u2 = 10; //seems to be exclusively ""
+	optional int32 u3 = 11; //seems to be exclusively 0
+	optional string u4 = 12; //seems to be exclusively ""
+	optional int32 u5 = 13; //seems to be exclusively 0
+	optional string genre = 14;	//fairly certain
+	optional int32 duration = 15; //fairly certain
+	optional int32 u6 = 16; //seems to be exclusively 0
+	optional int32 u7 = 20; //seems to be exclusively 0
+	optional int32 u8 = 26; //seems to be exclusively 0
+	optional int32 u9 = 27; //seems to be exclusively 0
+	optional int32 u10 = 28; //seems to be exclusively 0
+	optional int32 u11 = 31; //seems to be exclusively 1
+	optional int32 u12 = 32; //values include 5115029, 10396779, 5923343, 7640338, 8059133
+	optional int32 u13 = 37; //seems to be exclusively 0
+	optional int32 u14 = 38; //seems to be exclusively 0
+	optional int32 bitrate = 44; //mostly certain
+	optional string u15 = 53; //seems to be exclusively "-383260437"
+	optional int32 u16 = 61; 
 }
 
 
