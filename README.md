@@ -42,15 +42,40 @@ LSID=DQAAAMMREDACTEDLLorHpA
 Auth=DQAAREDACTEDep1i-o
 ```
 
+There's also a trailing newline, if that matters. 
+
 ##/upsj/upauth
 
-android.clients.google.com/upsj/upauth
+`POST https://android.clients.google.com/upsj/upauth HTTP/1.1`
 
-To be continued
+To be continued, first I have to deem whether or not this is actually necessary for the process. Ostensibly, the only thing this does is send a protobuf-encoded list of the computer's magic address and its hostname. The server responds with a series of numbers denoting some kind of state.
 
 ##/upsj/clientstate
 
+`POST https://android.clients.google.com/upsj/clientstate HTTP/1.1`
+
 To be continued
+
+This seems to send that magical address thing, this time with the last character substituted with a \n for no apparent reason (and nothing else).
+
+The server responds with that same series of cryptic numbers denoting state as well as what I believe to be the number current upload quota state.
+
+```
+1: 7
+6 {
+  1: 0
+  2: 0
+  3: 5
+  4: 6000
+  5: 0
+  6: 3000
+}
+8 {
+  1: 20000 //maximum number of songs that can be held for your current payment plan
+  2: 1696 //total number of songs you have uploaded?
+  3: 1402 //no clue what this is
+}
+```
 
 ##/upsj/metadata?version=1
 
