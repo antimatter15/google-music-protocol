@@ -1,0 +1,136 @@
+tracks {
+  id: "lJE0p7HzgoeiBToyLpAoIA"
+  creation: 1271984386
+  lastPlayed: 1272400853
+  title: "Carl Sagan - Glorious Dawn (ft Stephen Hawking)"
+  artist: "Colorpulse"
+  u0: ""
+  u1: ""
+  u2: ""
+  u3: 0
+  u4: ""
+  u5: 0
+  genre: "Other"
+  duration: 213000
+  u6: 0
+  u7: 0
+  u8: 0
+  u9: 0
+  u10: 0
+  u11: 1
+  u12: 5115029
+  u13: 0
+  u14: 0
+  bitrate: 192
+  u15: "-383260437"
+  u16: 1
+}
+tracks {
+  id: "AlIp3uQMfEVwXBtKZr+gvA"
+  creation: 1271984185
+  lastPlayed: 1271984206
+  title: "Our Place in the Cosmos"
+  artist: "Symphony of Science"
+  u0: ""
+  u1: ""
+  u2: ""
+  u3: 0
+  u4: ""
+  u5: 0
+  genre: "Other"
+  duration: 260000
+  u6: 0
+  u7: 0
+  u8: 0
+  u9: 0
+  u10: 0
+  u11: 1
+  u12: 10396779
+  u13: 0
+  u14: 0
+  bitrate: 320
+  u15: "-383260437"
+  u16: 1
+}
+tracks {
+  id: "6xVpl17f2h1U7MmEW9fOBg"
+  creation: 1271984163
+  lastPlayed: 1271984163
+  title: "Symphony_of_Science-The_Poetry_of_Reality.mp3"
+  artist: ""
+  u0: ""
+  u1: ""
+  u2: ""
+  u3: 0
+  u4: ""
+  u5: 0
+  genre: "Other"
+  duration: 185000
+  u6: 0
+  u7: 0
+  u8: 0
+  u9: 0
+  u10: 0
+  u11: 1
+  u12: 5923343
+  u13: 0
+  u14: 0
+  bitrate: 256
+  u15: "-383260437"
+  u16: 1
+}
+tracks {
+  id: "w27GLq50DEWzjWZdd67zXg"
+  creation: 1271984174
+  lastPlayed: 1271984181
+  title: "The Unbroken Thread"
+  artist: "Symphony of Science"
+  u0: ""
+  u1: ""
+  u2: ""
+  u3: 0
+  u4: ""
+  u5: 0
+  genre: "Other"
+  duration: 239000
+  u6: 0
+  u7: 0
+  u8: 0
+  u9: 0
+  u10: 0
+  u11: 1
+  u12: 7640338
+  u13: 0
+  u14: 0
+  bitrate: 256
+  u15: "-383260437"
+  u16: 1
+}
+tracks {
+  id: "O6dcgCLWhaAIwEnU9vbfFQ"
+  creation: 1271984204
+  lastPlayed: 1271984217
+  title: "We Are All Connected"
+  artist: "Symphony of Science"
+  u0: ""
+  u1: ""
+  u2: ""
+  u3: 0
+  u4: ""
+  u5: 0
+  genre: "Other"
+  duration: 252000
+  u6: 0
+  u7: 0
+  u8: 0
+  u9: 0
+  u10: 0
+  u11: 1
+  u12: 8059133
+  u13: 0
+  u14: 0
+  bitrate: 256
+  u15: "-383260437"
+  u16: 1
+}
+address: "00:1E:EC:6F:49:3\n"

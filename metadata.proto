@@ -1,0 +1,33 @@
+message Track {
+	optional string id = 2; //i dont know what this is
+	optional int32 creation = 3;
+	optional int32 lastPlayed = 4;
+	optional string title = 6;
+	optional string artist = 7;
+	optional string u0 = 8;
+	optional string u1 = 9;
+	optional string u2 = 10;
+	optional int32 u3 = 11;
+	optional string u4 = 12;
+	optional int32 u5 = 13;
+	optional string genre = 14;	
+	optional int32 duration = 15;
+	optional int32 u6 = 16;
+	optional int32 u7 = 20;
+	optional int32 u8 = 26;
+	optional int32 u9 = 27;
+	optional int32 u10 = 28;
+	optional int32 u11 = 31;
+	optional int32 u12 = 32;
+	optional int32 u13 = 37;
+	optional int32 u14 = 38;
+	optional int32 bitrate = 44;
+	optional string u15 = 53;
+	optional int32 u16 = 61;
+}
+
+
+message MetadataRequest {
+	repeated Track tracks = 1;
+	optional string address = 2; //I don't know what this is
+}
