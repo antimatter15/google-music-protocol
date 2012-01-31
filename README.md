@@ -9,9 +9,11 @@ User-Agent: Music Manager (1, 0, 24, 7712 - Windows)
 Host: www.google.com
 Accept: */*
 Content-Type: application/x-www-form-urlencoded
-Content-Length: 76
+Content-Length: 76```
 
-Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE```
+It's a POST request done over HTTPS with this content
+
+```Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountType=GOOGLE```
 
 
 This responds with the SID=, LSID=, Auth= cookie values.
