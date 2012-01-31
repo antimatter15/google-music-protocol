@@ -1,5 +1,6 @@
 This is the new home of research involving reverse-engineering the Google Music protocol, specifically, the uploading mechanism since most other parts are somewhat trivial.
 
+##Authentication
 
 POST https://www.google.com/accounts/ClientLogin HTTP/1.1
 User-Agent: Music Manager (1, 0, 24, 7712 - Windows)
@@ -14,9 +15,17 @@ Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountT
 This responds with the SID=, LSID=, Auth= cookie values.
 
 
-
+##/upsj/upauth
 
 android.clients.google.com/upsj/upauth
+
+To be continued
+
+##/upsj/clientstate
+
+To be continued
+
+##/upsj/metadata?version=1
 
 cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt
 
