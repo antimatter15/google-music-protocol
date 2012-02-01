@@ -1,0 +1,28 @@
+tracks {
+  id: "ABCDEFGHIJKLMNOPQRSTVX"
+  creation: 1271984386
+  lastPlayed: 1272400853
+  title: "This is not a song"
+  artist: "antimatter15"
+  composer: "composer"
+  album: "album"
+  albumArtist: "albumArtist"
+  year: 467
+  u4: "unknownfour"
+  track: 479
+  genre: "Other"
+  duration: 499
+  beatsPerMinute: 503
+  playCount: 521
+  totalTracks: 523
+  disc: 541
+  totalDiscs: 547
+  u11: 557
+  fileSize: 481237
+  u13: 613
+  u14: 617
+  bitrate: 192
+  u15: "-383260437"
+  u16: 859
+}
+address: "00:1E:EC:6F:49:3C"
