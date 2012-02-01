@@ -18,7 +18,7 @@ message Track {
 	optional int32 u9 = 27; //seems to be exclusively 0
 	optional int32 u10 = 28; //seems to be exclusively 0
 	optional int32 u11 = 31; //seems to be exclusively 1
-	optional int32 u12 = 32; //values include 5115029, 10396779, 5923343, 7640338, 8059133
+	optional int32 u12 = 32; //file size
 	optional int32 u13 = 37; //seems to be exclusively 0
 	optional int32 u14 = 38; //seems to be exclusively 0
 	optional int32 bitrate = 44; //mostly certain
