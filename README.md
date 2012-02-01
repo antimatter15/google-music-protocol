@@ -23,7 +23,7 @@ Email=username%40gmail.com&Passwd=thisisntactuallymypassword&service=sj&accountT
 
 Also an interesting tidbit, the `service=sj` thing. At first I thought it was stood for steve jobs, but that wouldn't make too much sense. I had it stuck in the back of my mind for a bit and then it struck me while looking at the uploadsj part of the URL. I think it's short for "skyjam", the internal code name for Google Music.
 
-The server thinks it's okay and then says.
+The server thinks it's okay and then says
 
 ```
 HTTP/1.1 200 OK
@@ -38,7 +38,7 @@ Content-Length: 881
 Server: GSE
 ```
 
-This responds with the SID=, LSID=, Auth= cookie values delimited by newlines.
+It responds with the SID=, LSID=, Auth= cookie values delimited by newlines.
 
 ```
 SID=DQAAREDACTEDkV3izSm
@@ -46,7 +46,9 @@ LSID=DQAAAMMREDACTEDLLorHpA
 Auth=DQAAREDACTEDep1i-o
 ```
 
-There's also a trailing newline, if that matters. 
+There's also a trailing newline, if that matters. It seems that the only value which is actually carried onto the cookies is SID, the other ones seem to be extraneous.
+
+Also, omitting the GOOGLE and sj parts seems to return something without an auth token.
 
 ##/upsj/upauth
 
@@ -54,15 +56,20 @@ There's also a trailing newline, if that matters.
 
 To be continued, first I have to deem whether or not this is actually necessary for the process. Ostensibly, the only thing this does is send a protobuf-encoded list of the computer's magic address and its hostname. The server responds with a series of numbers denoting some kind of state.
 
-Current Theory: This is in fact necessary. 
+It seems like this request is in fact required, as running the process with an altered "address" (that's the name that I've made up for the hexadecimal string delimited by colons) yields a permission denied error.
+
+```
+address: "00:1C:EE:3F:28:3B"
+hostname: "my-pc"
+```
+
+It is protobuf-encoded, as usual, and the server responds with a few things, but most of tha can be safely disregarded as it doesn't lend anything to future stages, and seems to only be some type of status update that seems hopelessly obfuscated.
 
 ##/upsj/clientstate
 
 `POST https://android.clients.google.com/upsj/clientstate HTTP/1.1`
 
-To be continued
-
-Current Theory: This isn't necessary.
+This doesn't matter nearly as much as the last stage, and the upload should be able to commence regardless of whether or not you send this message. All it does is give an update with regard to your quota details, ie. how many songs you can upload, how many you have, etc.
 
 This seems to send that magical address thing, this time with the last character substituted with a \n for no apparent reason (and nothing else).
 
@@ -76,15 +83,12 @@ The server responds with that same series of cryptic numbers denoting state as w
 }
 ```
 
-Also, rather interestingly, replaying the message yields an ugly "Your client does not have permission to get URL `/upsj/clientstate` from this server" message, but if you instead send the file which was intended for /upsj/upauth, everything works fine.
-
-Update: It seems that this is the product of the substitution of the last character of the data with a newline, possibly at Fiddler's end.
 
 ##/upsj/metadata?version=1
 
 This is where the actual action begins.
 
-Here's a basic overview of what I've gleaned of this process. The client sends a list of tracks which are to be uploaded, this includes all the ID3 metadata, and importantly, a random 22 character alphanumeric temporary ID. In response, the server returns a list which maps each of these temporary IDs, with a persistant track ID which is later used to actually upload stuff and to reference files.
+Here's a basic overview of what I've gleaned of this process. The client sends a list of tracks which are to be uploaded, this includes all the ID3 metadata, and importantly, a random 22 character alphanumeric temporary ID (it seems that this is called the ClientID, TODO: update existing documentation to use this new name). In response, the server returns a list which maps each of these temporary IDs, with a persistant track ID (the ServerID) which is later used to actually upload stuff and to reference files.
 
 
 `cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt`
