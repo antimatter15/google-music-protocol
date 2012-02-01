@@ -52,11 +52,15 @@ There's also a trailing newline, if that matters.
 
 To be continued, first I have to deem whether or not this is actually necessary for the process. Ostensibly, the only thing this does is send a protobuf-encoded list of the computer's magic address and its hostname. The server responds with a series of numbers denoting some kind of state.
 
+Current Theory: This is in fact necessary. 
+
 ##/upsj/clientstate
 
 `POST https://android.clients.google.com/upsj/clientstate HTTP/1.1`
 
 To be continued
+
+Current Theory: This isn't necessary.
 
 This seems to send that magical address thing, this time with the last character substituted with a \n for no apparent reason (and nothing else).
 
@@ -124,7 +128,7 @@ This is a piece of nice, human-readable JSON taken from the web interface API.
 }
 ```
 
-`POST https://android.clients.google.com/upsj/metadata?version=1 HTTP/1.1`
+`POST` to https://android.clients.google.com/upsj/metadata?version=1 
 
 ```
 1 {
