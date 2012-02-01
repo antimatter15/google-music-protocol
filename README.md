@@ -1,5 +1,7 @@
 This is the new home of research involving reverse-engineering the Google Music protocol, specifically, the uploading mechanism since most other parts are somewhat trivial.
 
+![Evidence that this works](https://dl-web.dropbox.com/get/Public/Screenshots/MusicAlpha%20Redux.png?w=81ae6528)
+
 ##Authentication
 
 This is the first thing the client does.
