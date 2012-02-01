@@ -47,9 +47,26 @@ message Status {
 	optional int32 u5 = 6; 
 }
 
+
+message TrackResponse {
+	repeated string ids = 2;
+	repeated QueuedUpload uploads = 3;	
+}
+
 message MetadataResponse {
 	optional int32 u0 = 1; //no idea what this is, but the value is 1
-	repeated string ids = 2;
-	repeated QueuedUpload uploads = 3;
+	optional TrackResponse response = 2;
 	optional Status state = 6;
+}
+
+message UploadAuth {
+	optional string address = 1;
+	optional string hostname = 2;
+}
+
+message UploadAuthResponse {
+	optional int32 u0 = 1;
+	optional Status status = 6;
+	optional int32 u1 = 11;
+	optional int32 u2 = 12;
 }

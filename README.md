@@ -70,6 +70,10 @@ The server responds with that same series of cryptic numbers denoting state as w
 }
 ```
 
+Also, rather interestingly, replaying the message yields an ugly "Your client does not have permission to get URL `/upsj/clientstate` from this server" message, but if you instead send the file which was intended for /upsj/upauth, everything works fine.
+
+Update: It seems that this is the product of the substitution of the last character of the data with a newline, possibly at Fiddler's end.
+
 ##/upsj/metadata?version=1
 
 This is where the actual action begins.
@@ -152,4 +156,27 @@ This is a piece of nice, human-readable JSON taken from the web interface API.
 }
 
 2: "00:1E:EC:6F:49:3\n"
+```
+
+
+This, my friends is the sound of success
+
+```
+u0: 1
+response {
+  ids: "lJE0p7HzgoeiBToyLpAoIA"
+  uploads {
+    id: "lJE0p7HzgoeiBToyLpAoIA"
+    u0: 4
+    serverId: "31c4330d-b519-368d-9fd0-b800d2bde10c"
+  }
+}
+state {
+  u0: 0
+  u1: 0
+  u2: 5
+  u3: 6000
+  u4: 0
+  u5: 3000
+}
 ```
