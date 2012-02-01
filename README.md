@@ -70,7 +70,7 @@ The server responds with that same series of cryptic numbers denoting state as w
 8 {
   1: 20000 //maximum number of songs that can be held for your current payment plan
   2: 1696 //total number of songs you have uploaded?
-  3: 1402 //no clue what this is
+  3: 1402 //available songs (what does that mean?)
 }
 ```
 
@@ -182,5 +182,79 @@ state {
   u3: 6000
   u4: 0
   u5: 3000
+}
+```
+
+
+#/uploadsj/rupio
+
+```
+{
+  "songs": [
+    {
+      "genre": "Other",
+      "beatsPerMinute": 503,
+      "albumArtistNorm": "unknowntwo",
+      "album": "unknownone",
+      "artistNorm": "antimatter15",
+      "lastPlayed": 1328105084757673,
+      "type": 2,
+      "disc": 541,
+      "id": "dc3307fd-be51-3048-b6d4-09184ff915cd",
+      "composer": "unknownzero",
+      "title": "This is not a song",
+      "albumArtist": "unknowntwo",
+      "totalTracks": 523,
+      "name": "This is not a song",
+      "totalDiscs": 547,
+      "year": 467,
+      "titleNorm": "this is not a song",
+      "artist": "antimatter15",
+      "albumNorm": "unknownone",
+      "track": 479,
+      "durationMillis": 499,
+      "deleted": false,
+      "url": "",
+      "creationDate": 1328104614553584,
+      "playCount": 521,
+      "rating": 0,
+      "comment": "unknownfour"
+    }
+  ],
+  "success": true
+}
+```
+
+This is the response to a successful request:
+
+```
+{
+  "sessionStatus": {
+    "state": "FINALIZED",
+    "externalFieldTransfers": [
+      {
+        "name": "magic.mp3",
+        "status": "COMPLETED",
+        "bytesTransferred": 481237,
+        "bytesTotal": 481237,
+        "putInfo": {
+          "url": "http://uploadsj.clients.google.com/uploadsj/rupio?upload_id=AEnB2UREDACTED-adSnQ&file_id=000"
+        },
+        "content_type": "audio/mpeg"
+      }
+    ],
+    "additionalInfo": {
+      "uploader_service.GoogleRupioAdditionalInfo": {
+        "completionInfo": {
+          "status": "SUCCESS",
+          "customerSpecificInfo": {
+            "ServerFileReference": "011a1REDACTEDaf881-19",
+            "ResponseCode": 200
+          }
+        }
+      }
+    },
+    "upload_id": "AEnB2REDACTEDh-adSnQ"
+  }
 }
 ```
