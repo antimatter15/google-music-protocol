@@ -74,6 +74,9 @@ The server responds with that same series of cryptic numbers denoting state as w
 
 This is where the actual action begins.
 
+Here's a basic overview of what I've gleaned of this process. The client sends a list of tracks which are to be uploaded, this includes all the ID3 metadata, and importantly, a random 22 character alphanumeric temporary ID. In response, the server returns a list which maps each of these temporary IDs, with a persistant track ID which is later used to actually upload stuff and to reference files.
+
+
 `cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt`
 
 
