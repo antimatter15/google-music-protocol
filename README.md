@@ -2,6 +2,22 @@ This is the new home of research involving reverse-engineering the Google Music 
 
 ![Evidence that this works](https://dl-web.dropbox.com/get/Public/Screenshots/MusicAlpha%20Redux.png?w=81ae6528)
 
+
+##Overview
+
+Here, I'd like to give an overview of how the process works without all the technical implementation details, and also present some of the more up-to-date information, since some of the rest of this file is quite dated and reflects older content.
+
+First is the process of logging in. This login process is surprisingly simple and involves a simple HTTPS POST request, and the response is just as simple: cookie values separated by newlines.
+
+Then you need to authenticate the uploader. This is where the protobufs encoding starts, and since we don't have the .proto files, some of the field names aren't necessarily right, and even worse, some are just left unnamed. The client makes up a random hexadecimal ID reminiscent of a MAC address (but it doesn't seem like an actual MAC address). It also looks up the machine's name (but this also doesn't seem like it matters). It concatenates them together and then sends it over to the server through that same POST mechansim.
+
+The server responds with an indecipherable status that can be safely disregarded.
+
+The next step is probably optional. The program can retrieve the current quota status of the Google Music account. That current quota status includes the maximum number of files of that current payment level, the total number of uploaded files and the available tracks. 
+
+The actual uploading phase involves sending a list of tracks and their associated ID3 metadata. Specifically, there is a set of fields which can be repeated containing ID3 data, and in addition, importantly, a ClientID which appears randomly generated. 
+
+
 ##Authentication
 
 This is the first thing the client does.
@@ -83,6 +99,12 @@ The server responds with that same series of cryptic numbers denoting state as w
 }
 ```
 
+As Simon Weber noted, it seems to correspond with the `/music/services/getstatus` json request.
+
+```
+"availableTracks":1671,
+"totalTracks":1723
+```
 
 ##/upsj/metadata?version=1
 
