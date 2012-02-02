@@ -113,19 +113,23 @@ if "bpm" in audio: track.beatsPerMinute = int(audio["bpm"][0])
 if "tracknumber" in audio: track.track = int(audio["tracknumber"][0])
 if "discnumber" in audio: track.disc = int(audio["discnumber"][0])
 
-#import tempfile
-#tmp = tempfile.TemporaryFile()
-#tmp.write(metadata.SerializeToString())
-print type(metadata.SerializeToString())
+import tempfile
+tmp = tempfile.TemporaryFile()
+metastr = metadata.SerializeToString()
+size = len(metastr)
+tmp.write(metastr)
+
+
 r = requests.post("https://android.clients.google.com/upsj/metadata?version=1", 
-					data=metadata.SerializeToString(),
+					data=tmp,
 					cookies=cookie,
+					headers={"Content-Length": str(size)},
 					verify = False)
 print r.content
 metadataresp = metadata_pb2.MetadataResponse()
 metadataresp.ParseFromString(r.content)
 #print utfencode(metadataresp)
-
+print metadataresp
 
 #tags = EasyID3(filename)
 #print tags
