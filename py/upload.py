@@ -10,5 +10,9 @@ if len(args) != 1:
 filename = args[0]
 
 from mutagen.easyid3 import EasyID3
-audio = EasyID3(filename)
+tags = EasyID3(filename)
+print tags
+
+from mutagen.mp3 import MP3
+audio = MP3(filename)
 print audio
