@@ -8,7 +8,7 @@ tracks {
   album: "album"
   albumArtist: "albumArtist"
   year: 467
-  u4: "unknownfour"
+  comment: "comment"
   track: 479
   genre: "Other"
   duration: 499
@@ -26,3 +26,4 @@ tracks {
   u16: 859
 }
 address: "00:1E:EC:6F:49:3C"
+
