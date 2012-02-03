@@ -16,14 +16,16 @@ SID = ''
 try:
 	SID = open(options.authfile, "r").read()
 except:
-	pass
+	print "Creating Authentication File " + options.authfile
 
 import urllib
 
 if SID == '' or options.relogin:
 	import getpass
-	email = raw_input("Enter Google Music Email Address: ")
-	pwd = getpass.getpass("Enter Google Music Password: ")
+	email = raw_input("Email: ")
+	pwd = getpass.getpass("Password: ")
+	
+	if "@" not in email: email += "@gmail.com"
 	payload = {
 		'Email': email,
 		'Passwd': pwd,
@@ -62,12 +64,9 @@ if options.verbose: print mac, hostname
 
 import metadata_pb2
 
-
 uauth = metadata_pb2.UploadAuth()
 uauth.address = mac
 uauth.hostname = hostname
-
-#print uauth.SerializeToString()
 
 uauthresp = metadata_pb2.UploadAuthResponse()
 uauthresp.ParseFromString(protopost("upauth", uauth))
@@ -75,8 +74,6 @@ if options.verbose: print uauthresp
 
 clientstate = metadata_pb2.ClientState()
 clientstate.address = mac
-
-#print uauth.SerializeToString()
 
 clientstateresp = metadata_pb2.ClientStateResponse()
 clientstateresp.ParseFromString(protopost("clientstate", clientstate))
@@ -118,8 +115,18 @@ for filename in args:
 	if "genre" in audio: track.genre = audio["genre"][0]
 	if "date" in audio: track.year = int(audio["date"][0])
 	if "bpm" in audio: track.beatsPerMinute = int(audio["bpm"][0])
-	#if "tracknumber" in audio: track.track = int(audio["tracknumber"][0])
-	#if "discnumber" in audio: track.disc = int(audio["discnumber"][0])
+	
+	if "tracknumber" in audio: 
+		tracknumber = audio["tracknumber"][0].split("/")
+		track.track = int(tracknumber[0])
+		if len(tracknumber) == 2:
+			track.totalTracks = int(tracknumber[1])
+
+	if "discnumber" in audio:
+		discnumber = audio["discnumber"][0].split("/")
+		track.disc = int(discnumber[0])
+		if len(discnumber) == 2:
+			track.totalDiscs = int(discnumber[1])
 
 
 metadataresp = metadata_pb2.MetadataResponse()
@@ -134,7 +141,7 @@ jumper = httplib.HTTPConnection('uploadsj.clients.google.com')
 for song in metadataresp.response.uploads:
 	filename = filemap[song.id]
 	audio = MP3(filename, ID3 = EasyID3)
-	print filename
+	print os.path.basename(filename)
 	if options.verbose: print song
 	payload = {
 	  "clientId": "Jumper Uploader",
@@ -149,7 +156,7 @@ for song in metadataresp.response.uploads:
 	      },
 	      {
 	        "external": {
-	          "filename": filename,
+	          "filename": os.path.basename(filename),
 	          "name": os.path.abspath(filename),
 	          "put": {},
 	          "size": os.path.getsize(filename)
@@ -214,7 +221,6 @@ for song in metadataresp.response.uploads:
 	  "protocolVersion": "0.8"
 	}
 	while True:
-		print "Trying to begin upload"
 		jumper.request("POST", "/uploadsj/rupio", json.dumps(payload), {
 			"Content-Type": "application/x-www-form-urlencoded", #wtf? shouldn't it be json? but that's what the google client sends
 			"Cookie": SID
@@ -223,6 +229,8 @@ for song in metadataresp.response.uploads:
 		if options.verbose: print r
 		if 'sessionStatus' in r: break
 		time.sleep(3)
+		print "Waiting for servers to sync..."
+
 	up = r['sessionStatus']['externalFieldTransfers'][0]
 	print "Uploading a file... this may take a while"
 	jumper.request("POST", up['putInfo']['url'], open(filename), {
