@@ -58,7 +58,7 @@ mac = ':'.join([mac[x:x+2] for x in range(0, 10, 2)])
 from socket import gethostname
 hostname = gethostname()
 
-print mac, hostname
+if options.verbose: print mac, hostname
 
 import metadata_pb2
 
@@ -71,7 +71,7 @@ uauth.hostname = hostname
 
 uauthresp = metadata_pb2.UploadAuthResponse()
 uauthresp.ParseFromString(protopost("upauth", uauth))
-print uauthresp
+if options.verbose: print uauthresp
 
 clientstate = metadata_pb2.ClientState()
 clientstate.address = mac
@@ -80,7 +80,7 @@ clientstate.address = mac
 
 clientstateresp = metadata_pb2.ClientStateResponse()
 clientstateresp.ParseFromString(protopost("clientstate", clientstate))
-print clientstateresp
+print clientstateresp.quota
 
 metadata = metadata_pb2.MetadataRequest()
 metadata.address = mac
@@ -104,7 +104,7 @@ for filename in args:
 	track.id = id
 
 	filesize = os.path.getsize(filename)
-	print filesize
+
 	track.fileSize = filesize
 
 	track.bitrate = audio.info.bitrate / 1000
@@ -125,54 +125,17 @@ for filename in args:
 metadataresp = metadata_pb2.MetadataResponse()
 metadataresp.ParseFromString(protopost("metadata?version=1", metadata))
 #print utfencode(metadataresp)
-print metadataresp
+if options.verbose: print metadataresp
 
 import time
-time.sleep(3)
-
 import json
 jumper = httplib.HTTPConnection('uploadsj.clients.google.com')
 
 for song in metadataresp.response.uploads:
-	print filemap[song.id]
-	print song
-	"""
-	inlined = {
-		"ClientId": song.id,
-		"ClientTotalSongCount": len(metadataresp.response.uploads),
-		"ClientTotalUploadedCount": "0",
-		"CurrentUploadingTrack": "Robotica",
-		"ServerID": song.serverId,
-		"SyncNow": "true",
-		"TrackBitRate": 192,
-		"TrackDoNotRematch": "false",
-		"UploaderId": mac
-	}
-	payload = {
-	  "clientId": "Jumper Uploader",
-	  "createSessionRequest": {
-	    "fields": [
-			{"inlined":{"content":"jumper-uploader-title-42","contentType":"text/plain","name":"title"}},
-			{
-				"external": {
-					"filename": filename,
-					"name": "C:\\home\\"+filename,
-					"put": {},
-					"size": os.path.getsize(filename)
-				}
-			}
-	    ]
-	  },
-	  "protocolVersion": "0.8"
-	}
-	for key in inlined:
-		payload['createSessionRequest']['fields'].append({
-			"inlined": {
-				"name": key,
-				"content": str(inlined[key])
-			}
-		})
-	"""
+	filename = filemap[song.id]
+	audio = MP3(filename, ID3 = EasyID3)
+	print filename
+	if options.verbose: print song
 	payload = {
 	  "clientId": "Jumper Uploader",
 	  "createSessionRequest": {
@@ -187,7 +150,7 @@ for song in metadataresp.response.uploads:
 	      {
 	        "external": {
 	          "filename": filename,
-	          "name": "C:\\home\\"+filename,
+	          "name": os.path.abspath(filename),
 	          "put": {},
 	          "size": os.path.getsize(filename)
 	        }
@@ -200,7 +163,7 @@ for song in metadataresp.response.uploads:
 	      },
 	      {
 	        "inlined": {
-	          "content": "9",
+	          "content": str(len(args)),
 	          "name": "ClientTotalSongCount"
 	        }
 	      },
@@ -212,7 +175,7 @@ for song in metadataresp.response.uploads:
 	      },
 	      {
 	        "inlined": {
-	          "content": "This is purple song",
+	          "content": audio["title"][0],
 	          "name": "CurrentUploadingTrack"
 	        }
 	      },
@@ -230,7 +193,7 @@ for song in metadataresp.response.uploads:
 	      },
 	      {
 	        "inlined": {
-	          "content": "192",
+	          "content": str(audio.info.bitrate),
 	          "name": "TrackBitRate"
 	        }
 	      },
@@ -250,23 +213,22 @@ for song in metadataresp.response.uploads:
 	  },
 	  "protocolVersion": "0.8"
 	}
-	jumper.request("POST", "/uploadsj/rupio", json.dumps(payload), {
-		"Content-Type": "application/x-www-form-urlencoded", #wtf? shouldn't it be json? but that's what the google client sends
-		"Cookie": SID
-	})
-	r = json.loads(jumper.getresponse().read())
-	print r
+	while True:
+		print "Trying to begin upload"
+		jumper.request("POST", "/uploadsj/rupio", json.dumps(payload), {
+			"Content-Type": "application/x-www-form-urlencoded", #wtf? shouldn't it be json? but that's what the google client sends
+			"Cookie": SID
+		})
+		r = json.loads(jumper.getresponse().read())
+		if options.verbose: print r
+		if 'sessionStatus' in r: break
+		time.sleep(3)
 	up = r['sessionStatus']['externalFieldTransfers'][0]
+	print "Uploading a file... this may take a while"
 	jumper.request("POST", up['putInfo']['url'], open(filename), {
 		'Content-Type': up['content_type']
 	})
-	print jumper.getresponse().read()
-
-
-
-#tags = EasyID3(filename)
-#print tags
-
-
-
-#print "discnumber" in audio #audio["discnumber"]
+	r = json.loads(jumper.getresponse().read())
+	if options.verbose: print r
+	if r['sessionStatus']['state'] == 'FINALIZED':
+		print "Uploaded File Successfully"
