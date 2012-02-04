@@ -149,83 +149,43 @@ for song in metadataresp.response.uploads:
 	audio = MP3(filename, ID3 = EasyID3)
 	print os.path.basename(filename)
 	if options.verbose: print song
+	inlined = {
+		"title": "jumper-uploader-title-42",
+		"ClientId": song.id,
+		"ClientTotalSongCount": len(metadataresp.response.uploads),
+		"CurrentTotalUploadedCount": "0",
+		"CurrentUploadingTrack": audio["title"][0],
+		"ServerId": song.serverId,
+		"SyncNow": "true",
+		"TrackBitRate": audio.info.bitrate,
+		"TrackDoNotRematch": "false",
+		"UploaderId": mac
+	}
 	payload = {
 	  "clientId": "Jumper Uploader",
 	  "createSessionRequest": {
 	    "fields": [
-	      {
-	        "inlined": {
-	          "content": "jumper-uploader-title-42",
-	          "contentType": "text/plain",
-	          "name": "title"
-	        }
-	      },
-	      {
-	        "external": {
-	          "filename": os.path.basename(filename),
-	          "name": os.path.abspath(filename),
-	          "put": {},
-	          "size": os.path.getsize(filename)
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": song.id,
-	          "name": "ClientId"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": str(len(args)),
-	          "name": "ClientTotalSongCount"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": "0",
-	          "name": "CurrentTotalUploadedCount"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": audio["title"][0],
-	          "name": "CurrentUploadingTrack"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": song.serverId,
-	          "name": "ServerId"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": "true",
-	          "name": "SyncNow"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": str(audio.info.bitrate),
-	          "name": "TrackBitRate"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": "false",
-	          "name": "TrackDoNotRematch"
-	        }
-	      },
-	      {
-	        "inlined": {
-	          "content": mac,
-	          "name": "UploaderId"
-	        }
-	      }
+			{
+				"external": {
+		          "filename": os.path.basename(filename),
+		          "name": os.path.abspath(filename),
+		          "put": {},
+		          "size": os.path.getsize(filename)
+		        }
+			}
 	    ]
 	  },
 	  "protocolVersion": "0.8"
 	}
+	for key in inlined:
+		payload['createSessionRequest']['fields'].append({
+			"inlined": {
+				"content": str(inlined[key]),
+				"name": key
+			}
+		})
+	print json.dumps(payload)
+
 	while True:
 		jumper.request("POST", "/uploadsj/rupio", json.dumps(payload), {
 			"Content-Type": "application/x-www-form-urlencoded", #wtf? shouldn't it be json? but that's what the google client sends
