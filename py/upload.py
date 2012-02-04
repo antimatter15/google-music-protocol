@@ -1,7 +1,8 @@
 """
-This is a simple sample implementation of the Google Music Upload Protocol.
+This is a simple implementation of the reverse-engineered Google Music Upload Protocol.
 
-
+Please email antimatter15@gmail.com if you find any use for this, 
+or if you're from the distant future (ie. the year 2013).
 """
 
 from optparse import OptionParser
@@ -49,6 +50,7 @@ if SID == '' or options.relogin:
 import httplib
 android = httplib.HTTPSConnection("android.clients.google.com")
 
+#POST a protobuf object to Google's skyjam servers and return the binary result
 def protopost(path, proto):
 	global SID, android
 	android.request("POST", "/upsj/"+path, proto.SerializeToString(), {
@@ -59,11 +61,12 @@ def protopost(path, proto):
 	print "Response from", path, "Status", r.status, r.reason
 	return r.read()
 
-
+#The UploaderID is identical to the NIC's MAC address
 from uuid import getnode as getmac
 mac = hex(getmac())[2:-1]
 mac = ':'.join([mac[x:x+2] for x in range(0, 10, 2)])
 
+#The Upload Authentication phase also looks up the hostname
 from socket import gethostname
 hostname = gethostname()
 
@@ -99,28 +102,25 @@ filemap = {} #this maps a generated ClientID with a filename
 
 for filename in args:
 	track = metadata.tracks.add()
-
 	audio = MP3(filename, ID3 = EasyID3)
-
+	
 	chars = string.ascii_letters + string.digits 
 	id = ''.join(random.choice(chars) for i in range(20))
 	filemap[id] = filename
 	track.id = id
 
 	filesize = os.path.getsize(filename)
-
 	track.fileSize = filesize
-
 	track.bitrate = audio.info.bitrate / 1000
 	track.duration = int(audio.info.length * 1000)
-	if "album" in audio: track.album = audio["album"][0]
 
+	if "album" in audio: track.album = audio["album"][0]
 	if "title" in audio: track.title = audio["title"][0]
 	if "artist" in audio: track.artist = audio["artist"][0]
 	if "composer" in audio: track.composer = audio["composer"][0]
 	#if "albumartistsort" in audio: track.albumArtist = audio["albumartistsort"][0]
 	if "genre" in audio: track.genre = audio["genre"][0]
-	if "date" in audio: track.year = int(audio["date"][0])
+	if "date" in audio: track.year = int(audio["date"][0].split("-")[0])
 	if "bpm" in audio: track.beatsPerMinute = int(audio["bpm"][0])
 	
 	if "tracknumber" in audio: 
@@ -149,6 +149,8 @@ for song in metadataresp.response.uploads:
 	audio = MP3(filename, ID3 = EasyID3)
 	print os.path.basename(filename)
 	if options.verbose: print song
+	#Only ServerId is necessary to upload the file
+	#At time of writing, the other attributes seem to be ignored
 	inlined = {
 		"title": "jumper-uploader-title-42",
 		"ClientId": song.id,
@@ -184,7 +186,6 @@ for song in metadataresp.response.uploads:
 				"name": key
 			}
 		})
-	print json.dumps(payload)
 
 	while True:
 		jumper.request("POST", "/uploadsj/rupio", json.dumps(payload), {
