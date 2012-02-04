@@ -1,4 +1,11 @@
+"""
+This is a simple sample implementation of the Google Music Upload Protocol.
+
+
+"""
+
 from optparse import OptionParser
+
 parser = OptionParser(usage="usage: %prog [options] filename")
 #parser.add_option("-r", "--raw",action="store_true", dest="raw",help="include raw JSON")
 parser.add_option("-v", "--verbose", action="store_true", help="verbose")
@@ -24,7 +31,7 @@ if SID == '' or options.relogin:
 	import getpass
 	email = raw_input("Email: ")
 	pwd = getpass.getpass("Password: ")
-	
+
 	if "@" not in email: email += "@gmail.com"
 	payload = {
 		'Email': email,
@@ -131,7 +138,6 @@ for filename in args:
 
 metadataresp = metadata_pb2.MetadataResponse()
 metadataresp.ParseFromString(protopost("metadata?version=1", metadata))
-#print utfencode(metadataresp)
 if options.verbose: print metadataresp
 
 import time

@@ -64,6 +64,23 @@ message UploadAuth {
 	optional string hostname = 2;
 }
 
+
+message Quota {
+	optional int32 maximumTracks = 1;
+	optional int32 totalTracks = 2;
+	optional int32 availableTracks = 3;
+}
+
+message ClientState {
+	optional string address = 1;
+}
+
+message ClientStateResponse {
+	optional int32 u0 = 1;
+	optional Status status = 6;
+	optional Quota quota = 8;
+}
+
 message UploadAuthResponse {
 	optional int32 u0 = 1;
 	optional Status status = 6;
