@@ -1,22 +1,28 @@
-This is the new home of research involving reverse-engineering the Google Music protocol, specifically, the uploading mechanism since most other parts are somewhat trivial.
+This project aims to document the protocol for uploading music files to Google Music. This project is related to the [MusicAlpha](https://github.com/antimatter15/musicalpha) project as well as [Unofficial-Google-Music-API](https://github.com/simon-weber/Unofficial-Google-Music-API). Since there is no official documentation, much of the process involves guesswork, but the process is largely functional. In the `py` directory, which you can find in this git repository, there is a simple python implementation of this protocol, capable of uploading songs via the command line.
 
 ![Evidence that this works](http://dl.dropbox.com/u/1024307/Screenshots/MusicAlpha%20Redux.png)
 
-
 ##Overview
 
-Here, I'd like to give an overview of how the process works without all the technical implementation details, and also present some of the more up-to-date information, since some of the rest of this file is quite dated and reflects older content.
+Here, I'd like to give an overview of how the process works without all the technical implementation details, and also present some of the more up-to-date information, since some of the rest of this file is quite dated and reflects older content. Note that many of these stages are mere guesses based on behavior and contracted names.
 
-First is the process of logging in. This login process is surprisingly simple and involves a simple HTTPS POST request, and the response is just as simple: cookie values separated by newlines.
+First is the process of logging in. This login process is surprisingly simple and involves a simple HTTPS POST request, and the response is just as simple: cookie values separated by newlines. This must be conducted over HTTPS, or else the response simply doesn't work. Also, the values seem equivalent to browser login cookies (the only one which is needed is the SID, everything else can pretty much be discarded), as in, a SID attained through the web based login is just as valid as one procured through this process, though unless you're making some browser extension (a la MusicAlpha), this method is probably a lot simpler (occam's razor behooves you).
 
-Then you need to authenticate the uploader. This is where the protobufs encoding starts, and since we don't have the .proto files, some of the field names aren't necessarily right, and even worse, some are just left unnamed. The client makes up a random hexadecimal ID reminiscent of a MAC address (but it doesn't seem like an actual MAC address). It also looks up the machine's name (but this also doesn't seem like it matters). It concatenates them together and then sends it over to the server through that same POST mechansim.
+Clutching that mighty `SID` token, you can finally begin the galliant quest of sending your music through a series of tubes. However, the next step involves Google's Protocol Buffers, a binary data format. Previously, this served as a huge roadblock in deciphering the protocol, since the Music Manager application ignored the operating system's list of trusted root certificates and communicated exclusively through SSL. However, we found a way to patch the executable to disable certificate checking and use a mitm ssl proxy (Fiddler) to glean insights into latter stages of the process.
 
-The server responds with an indecipherable status that can be safely disregarded.
+The first of these is uploader authentication, and at fairly straightforward at that. The process involves sending the NIC's MAC address and the computer's hostname (protobuf encoded) to Google's servers, which in return, respond with some protobuf encoded status message consisting of indecipherable numbers. This is used to register a device with Google Music, which restricts you to "up to 10 devices" which can be managed from the web interface in the [settings page](https://music.google.com/music/listen?u=0#settings_pl). 
 
-The next step is probably optional. The program can retrieve the current quota status of the Google Music account. That current quota status includes the maximum number of files of that current payment level, the total number of uploaded files and the available tracks. 
+Once you have authenticated your Uploader ID (MAC address), you can query for things like the user's current quota status. That current quota status includes the maximum number of files of that current payment level, the total number of uploaded files and the available tracks. 
 
-The actual uploading phase involves sending a list of tracks and their associated ID3 metadata. Specifically, there is a set of fields which can be repeated containing ID3 data, and in addition, importantly, a ClientID which appears randomly generated. 
+The actual uploading process commences when you send a list of tracks that you plan on uploading with the associated ID3 metadata. The whole impetus behind this seems quite odd since it appears Google does its own parsing of ID3 data on its end as well (but chooses not to display it). It seems that Google extracts the Album Art from the file but relies on the metadata submitted through this phase for textual things (Album Artist, Title, etc.), and the files which it sends to browsers are stripped of ID3 data (Presumably, this allows them to differentiate between MP3s downloaded through the restricted (two time only) download dialog and those which are simply used for playing audio. A less sinister theory is that they might just want to save on bandwidth. 
 
+Anyway, each one of these requests contains several tracks worth of metadata. Along with metadata, there are several fields which have yet to be interpreted to any useful extent. Notably, each track is assigned a 20-character random alphanumeric string, later referenced as the ClientId. In the server's response, these ClientIds are paired with respective ServerIds, which are longer and resemble UUIDs. It's the ServerID which is used in the step which begins the actual transfer. The server's response also incorporates that mysterious status update motif.
+
+The reason tracks are initialized in bulk, is because there's actually a period of time which must be waited before proceeding to the next step. This seems to be about 3 seconds after the server has responded with ServerIds, presumably for the uploadsj and android servers to sync up.
+
+Once that duration has elapsed, the client opens an unencrypted HTTP channel to Google Music and POSTs some JSON, repeating some audio information (file name, bitrate), including some useless things and notably, including the ServerID. The server responds with more JSON, which includes a putUrl which is quite self explanatory. It's a URL, which you're supposed to send a PUT to, with the contents of that file. 
+
+At this point, you're done. 
 
 ##Authentication
 
@@ -64,22 +70,38 @@ Auth=DQAAREDACTEDep1i-o
 
 There's also a trailing newline, if that matters. It seems that the only value which is actually carried onto the cookies is SID, the other ones seem to be extraneous.
 
-Also, omitting the GOOGLE and sj parts seems to return something without an auth token.
+Also, omitting the GOOGLE and sj parts seems to return something without an auth token. It's not yet clear if that resultant SID is still valid.
 
 ##/upsj/upauth
 
 `POST https://android.clients.google.com/upsj/upauth HTTP/1.1`
 
-To be continued, first I have to deem whether or not this is actually necessary for the process. Ostensibly, the only thing this does is send a protobuf-encoded list of the computer's magic address and its hostname. The server responds with a series of numbers denoting some kind of state.
+This is the first thing that a computer does once the authentication token has been generated. However, it is likely that this process only needs to be executed once. The purpose of this step seems to register the current client as a "device" from which Google Music content can be managed. Google places a restriction such that the Music library can only be accessed from "up to ten devices", each of which can be manually deauthorized from the settings page of the web interface. It is this restriction that also seems to be the reason Google does not allow the Music Manager software to run on Virtual Machines, for they each use stock MAC addresses that fail to differentiate between installations.
 
-It seems like this request is in fact required, as running the process with an altered "address" (that's the name that I've made up for the hexadecimal string delimited by colons) yields a permission denied error.
+The contents of that POST request are reproduced below, decoded with our `.proto` file which may or may not reflect the original internal one. As you can see, there are two string fields named the "address" and "hostname", respectively. The address is the device's MAC address, and represents a unique identifier for a client. The hostname is the computer's name, and is used as user-facing text to identify the device. In later stages of the upload process (The JSON-encoded `/uploadsj/rupio` part), the address is also known as an `UploaderID`. From the web interface, the `/music/services/loadsettings` request refers to the address and hostname as `id` and `name`, respectively.
 
 ```
-address: "00:1C:EE:3F:28:3B"
+address: "02:11:DD:3B:1A:3A"
 hostname: "my-pc"
 ```
 
-It is protobuf-encoded, as usual, and the server responds with a few things, but most of tha can be safely disregarded as it doesn't lend anything to future stages, and seems to only be some type of status update that seems hopelessly obfuscated.
+The response consists of a series of numbers which are yet to be interpreted in any significant way. However, the contents do not seem to deviate from the values depicted below.
+
+```
+1: 6
+6 {
+  1: 0
+  2: 0
+  3: 5
+  4: 6000
+  5: 0
+  6: 3000
+}
+11: 8
+12: 10
+```
+
+However, their values do not seem to play any role in any subsequent steps, so they can be safely discarded.
 
 ##/upsj/clientstate
 
@@ -284,5 +306,71 @@ This is the response to a successful request:
     },
     "upload_id": "AEnB2REDACTEDh-adSnQ"
   }
+}
+```
+
+
+##/upsj/uploadstate?version=1
+
+`POST https://android.clients.google.com/upsj/uploadstate?version=1 HTTP/1.1`
+
+Here's the protobuf-decoded thing, containing the uploader ID and something else which I have no idea about.
+
+```
+1: 1
+2: "00:1F:3A:6D:42:21"
+```
+
+In return, the server returns more gobblygoop.
+
+```
+1: 8
+6 {
+  1: 0
+  2: 0
+  3: 5
+  4: 6000
+  5: 0
+  6: 3000
+}
+11: 10
+```
+
+
+##/upsj/getjobs?version=1
+
+`POST https://android.clients.google.com/upsj/getjobs?version=1 HTTP/1.1`
+
+This seems to retrieve a list of upload jobs. It takes the Uploader ID.
+
+```
+1: "00:1F:3A:6D:42:21"
+```
+
+In return, the server responds with:
+
+```
+1: 5
+6 {
+  1: 0
+  2: 0
+  3: 5
+  4: 6000
+  5: 0
+  6: 3000
+}
+7 {
+  1 {
+    1: "2xgHehGNCIrgHcBbiFnDhg"
+    2: "3ed1f828-b44d-33aa-b11c-8986b8232344"
+    5: 4
+  }
+  ...
+  1 {
+    1: "AlIp3uQMfEVwXBtKZr+gvA"
+    2: "c5fb4b55-834a-3c51-ad67-acac072c201a"
+    5: 4
+  }
+  2: 10
 }
 ```
