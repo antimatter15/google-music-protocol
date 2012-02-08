@@ -109,8 +109,6 @@ However, their values do not seem to play any role in any subsequent steps, so t
 
 This doesn't matter nearly as much as the last stage, and the upload should be able to commence regardless of whether or not you send this message. All it does is give an update with regard to your quota details, ie. how many songs you can upload, how many you have, etc.
 
-This seems to send that magical address thing, this time with the last character substituted with a \n for no apparent reason (and nothing else).
-
 The server responds with that same series of cryptic numbers denoting state as well as what I believe to be the number current upload quota state.
 
 ```
@@ -128,6 +126,8 @@ As Simon Weber noted, it seems to correspond with the `/music/services/getstatus
 "totalTracks":1723
 ```
 
+The available tracks seems to be the number of tracks which is displayed in the web client.
+
 ##/upsj/metadata?version=1
 
 This is where the actual action begins.
@@ -137,46 +137,6 @@ Here's a basic overview of what I've gleaned of this process. The client sends a
 
 `cat musicman2.saz_FILES/raw/08_c.txt | python strip.py | protoc --decode=MetadataRequest metadata.proto > test_proto.txt`
 
-
-This is a piece of nice, human-readable JSON taken from the web interface API.
-
-```
-{
-  "songs": [
-    {
-      "genre": "Other",
-      "beatsPerMinute": 0,
-      "albumArtistNorm": "",
-      "album": "",
-      "artistNorm": "colorpulse",
-      "lastPlayed": 1328036402939798,
-      "type": 2,
-      "disc": "",
-      "id": "31c4330d-b519-368d-9fd0-b800d2bde10c",
-      "composer": "",
-      "title": "Carl Sagan - Glorious Dawn (ft Stephen Hawking)",
-      "albumArtist": "",
-      "totalTracks": "",
-      "name": "Carl Sagan - Glorious Dawn (ft Stephen Hawking)",
-      "totalDiscs": "",
-      "year": "",
-      "titleNorm": "carl sagan - glorious dawn (ft stephen hawking)",
-      "artist": "Colorpulse",
-      "albumNorm": "",
-      "paused": true,
-      "track": "",
-      "durationMillis": 213000,
-      "deleted": false,
-      "url": "",
-      "creationDate": 1328032831429284,
-      "playCount": 0,
-      "rating": 0,
-      "comment": ""
-    }
-  ],
-  "success": true
-}
-```
 
 `POST` to https://android.clients.google.com/upsj/metadata?version=1 
 
@@ -237,43 +197,6 @@ state {
 
 
 #/uploadsj/rupio
-
-```
-{
-  "songs": [
-    {
-      "genre": "Other",
-      "beatsPerMinute": 503,
-      "albumArtistNorm": "unknowntwo",
-      "album": "unknownone",
-      "artistNorm": "antimatter15",
-      "lastPlayed": 1328105084757673,
-      "type": 2,
-      "disc": 541,
-      "id": "dc3307fd-be51-3048-b6d4-09184ff915cd",
-      "composer": "unknownzero",
-      "title": "This is not a song",
-      "albumArtist": "unknowntwo",
-      "totalTracks": 523,
-      "name": "This is not a song",
-      "totalDiscs": 547,
-      "year": 467,
-      "titleNorm": "this is not a song",
-      "artist": "antimatter15",
-      "albumNorm": "unknownone",
-      "track": 479,
-      "durationMillis": 499,
-      "deleted": false,
-      "url": "",
-      "creationDate": 1328104614553584,
-      "playCount": 521,
-      "rating": 0,
-      "comment": "unknownfour"
-    }
-  ],
-  "success": true
-}
-```
 
 This is the response to a successful request:
 
